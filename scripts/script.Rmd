@@ -12,17 +12,68 @@ library(tidyverse)
 library(rio)
 library(here)
 library(janitor)
+library(gghighlight) 
+library(cowplot)
+library(colorspace)
+library(colorblindr)
+library(ggtext)
 
 data = import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
   characterize() %>% 
   clean_names()
+
 ```
 
+# Question 1
+```{r warning=FALSE}
+plot1 = data %>% 
+  mutate(Year = factor(year), 
+  Totalprod = as.numeric(totalprod))%>% 
+  select(state, Totalprod, Year) %>% 
+  as_tibble() %>% 
+  ggplot(aes(Year, Totalprod, group = state)) +
+    geom_line(aes(color = state))+
+   facet_wrap(~state, scales = "free_y", ncol = 1) +
+   gghighlight(state == c("WA", "OR", "CA"),
+               unhighlighted_colour = alpha("#bcbddc", 0.4)) + 
+scale_color_OkabeIto()+
+  labs(y = "Total production",
+       title = "Total production of honey across years by state")+
+    geom_hline(aes(yintercept = 0), color= "#636363", size = .2)+
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+ #stop scientific notation
+  theme_minimal()
 
+plot1 + theme(panel.grid.minor = element_blank(), 
+             panel.background = element_blank(),
+             plot.title = element_text(size=11, face="bold", hjust = 0.5),
+              axis.ticks = element_line(color = "#bdbdbd"),
+             axis.title.x = element_text(size=11, face="bold"),
+             axis.title.y = element_text(size=11, face="bold"),
+             axis.text.x = element_markdown(hjust = 1))
+```
 
+# Question 2
+```{r}
 
+```
 
-```{r }
+# Question 3
+```{r}
+
+```
+
+# Question 4
+```{r}
+
+```
+
+# Question 5
+```{r}
+
+```
+
+# Question 6
+```{r}
 
 ```
 
