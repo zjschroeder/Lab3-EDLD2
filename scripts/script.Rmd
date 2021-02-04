@@ -25,7 +25,7 @@ data = import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>%
 ```
 
 # Question 1
-```{r }
+```{r warning=FALSE}
 plot1 = data %>% 
   mutate(Year = factor(year), 
   Totalprod = as.numeric(totalprod))%>% 
@@ -43,7 +43,13 @@ scale_color_OkabeIto()+
   scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+ #stop scientific notation
   theme_minimal()
 
-plot1
+plot1 + theme(panel.grid.minor = element_blank(), 
+             panel.background = element_blank(),
+             plot.title = element_text(size=11, face="bold", hjust = 0.5),
+              axis.ticks = element_line(color = "#bdbdbd"),
+             axis.title.x = element_text(size=11, face="bold"),
+             axis.title.y = element_text(size=11, face="bold"),
+             axis.text.x = element_markdown(hjust = 1))
 ```
 
 # Question 2
