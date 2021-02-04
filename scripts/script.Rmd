@@ -33,6 +33,7 @@ plot1 = data %>%
   as_tibble() %>% 
   ggplot(aes(Year, Totalprod, group = state)) +
     geom_line(aes(color = state))+
+   facet_wrap(~state, scales = "free_y", ncol = 1) +
    gghighlight(state == c("WA", "OR", "CA"),
                unhighlighted_colour = alpha("#bcbddc", 0.4)) + 
 scale_color_OkabeIto()+
