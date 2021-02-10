@@ -54,41 +54,70 @@ plot1 + theme(panel.grid.minor = element_blank(),
              axis.title.x = element_text(size=11, face="bold"),
              axis.title.y = element_text(size=11, face="bold"),
              axis.text.x = element_markdown(hjust = 1))
-```
 
-# Question 2
-```{r}
-colorblindr::cvd_grid(plot1)
-```
 
-# Question 3
-```{r}
-plot2 <- data %>% 
+plot1_nofacet <- data %>% 
   mutate(Year = factor(year), 
   Totalprod = as.numeric(totalprod))%>% 
   select(state, Totalprod, Year) %>% 
   as_tibble() %>% 
   ggplot(aes(Year, Totalprod, group = state)) +
     geom_line(aes(color = state))+
- #  facet_wrap(~state, scales = "free_y", ncol = 1) +
    gghighlight(state == c("WA", "OR", "CA"),
-               unhighlighted_colour = alpha("#bcbddc", 0.4)) + 
+               unhighlighted_colour = alpha("#e7d1c1", 0.5)) + 
+scale_color_OkabeIto()+
+  labs(y = "Total production",
+       title = "Total production of honey across years by state")+
+    geom_hline(aes(yintercept = 0), color= "#636363", size = .2)+
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+
+  theme_minimal() + 
+  theme(panel.grid.minor = element_blank(), 
+             panel.background = element_blank(),
+             plot.title = element_text(size=8, face="bold", hjust = 0.5),
+              axis.ticks = element_line(color = "#bdbdbd"),
+             axis.title.x = element_text(size=8, face="bold"),
+             axis.title.y = element_text(size=8, face="bold"),
+             axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5))
+plot1_nofacet
+
+```
+
+# Question 2
+```{r warning=FALSE}
+colorblindr::cvd_grid(plot1_nofacet)
+```
+
+# Question 3
+```{r, warning=FALSE}
+
+plot_cb <- data %>% 
+  mutate(Year = factor(year), 
+  Totalprod = as.numeric(totalprod))%>% 
+  select(state, Totalprod, Year) %>% 
+  as_tibble() %>% 
+  ggplot(aes(Year, Totalprod, group = state)) +
+    geom_line(aes(color = state))+
+   gghighlight(state == c("WA", "OR", "CA"),
+               unhighlighted_colour = alpha("#e7d1c1", 0.5)) + 
   scale_fill_viridis_d()+ #color-blind safe
   labs(y = "Total production",
        title = "Total production of honey across years by state")+
     geom_hline(aes(yintercept = 0), color= "#636363", size = .2)+
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+ #stop scientific notation
-  theme_minimal()
-
-plot2 + theme(panel.grid.minor = element_blank(), 
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+ 
+  theme_minimal() +
+  theme(panel.grid.minor = element_blank(), 
              panel.background = element_blank(),
-             plot.title = element_text(size=11, face="bold", hjust = 0.5),
+             plot.title = element_text(size=8, face="bold", hjust = 0.5),
               axis.ticks = element_line(color = "#bdbdbd"),
-             axis.title.x = element_text(size=11, face="bold"),
-             axis.title.y = element_text(size=11, face="bold"),
-             axis.text.x = element_markdown(hjust = 1))
+             axis.title.x = element_text(size=8, face="bold"),
+             axis.title.y = element_text(size=8, face="bold"),
+             axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5))
+plot_cb
 
-colorblindr::cvd_grid(plot2)
+
+colorblindr::cvd_grid(plot_cb)
+#the green and blue is a bit hard to differentiate in the Tritanomaly version, however, I think it's different enough. Just might not be ideal. 
+
 #safe_colorblind_palette <- c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499","#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888")
 #scales::show_col(safe_colorblind_palette)
 ```
