@@ -18,7 +18,11 @@ library(colorspace)
 library(colorblindr)
 library(ggtext)
 
-data = import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
+data <- import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
+  characterize() %>% 
+  clean_names()
+
+data_region <- import(here("data", "censusregions.csv"), setclass = "tb_df") %>% 
   characterize() %>% 
   clean_names()
 
@@ -26,7 +30,7 @@ data = import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>%
 
 # Question 1
 ```{r warning=FALSE}
-plot1 = data %>% 
+plot1 <- data %>% 
   mutate(Year = factor(year), 
   Totalprod = as.numeric(totalprod))%>% 
   select(state, Totalprod, Year) %>% 
@@ -59,7 +63,7 @@ colorblindr::cvd_grid(plot1)
 
 # Question 3
 ```{r}
-plot2 = data %>% 
+plot2 <- data %>% 
   mutate(Year = factor(year), 
   Totalprod = as.numeric(totalprod))%>% 
   select(state, Totalprod, Year) %>% 
