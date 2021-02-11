@@ -138,14 +138,27 @@ data_honey <- data %>%
 data_honey2 <- left_join(data_honey, data_region, by = "state_code")
 
 data_honey2 %>% 
+  group_by(region) %>% 
+  summarise(mean = mean(totalprod))
+
+data_honey2 %>% 
   ggplot() + 
   geom_bar(aes(totalprod, fct_reorder(state, totalprod), fill = region),
          stat = "summary", fun.x = "mean",
-         alpha = .8) +
+         alpha = .8,
+         position = "dodge",
+         color = "white") +
   scale_x_log10(labels = comma) +
   coord_cartesian(xlim = c(100000, 100000000)) +
-  labs(x = "Average Honey Production", y = "State", fill = "Region") +
-  theme_minimal()
+  labs(x = "Average Honey Production (lbs)", y = "State", fill = "Region",
+       title = "Midwest and West Dominate US Honey Production") +
+  scale_color_OkabeIto()+
+  theme_minimal() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title = element_text(size=17),
+        axis.title.x = element_text(size=13),
+        axis.title.y = element_text(size=13),
+        axis.text = element_text(size=8))
 
 ```
 
