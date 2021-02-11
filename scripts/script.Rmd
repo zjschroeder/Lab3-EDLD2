@@ -18,6 +18,8 @@ library(colorspace)
 library(colorblindr)
 library(ggtext)
 library(dplyr)
+library(scales)
+library(forcats)
 
 data <- import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
   characterize() %>% 
@@ -130,6 +132,15 @@ data_honey <- data %>%
   select(-state)
   
 data_honey2 <- left_join(data_honey, data_region, by = "state_code")
+
+data_honey2 %>% 
+  ggplot() + 
+  geom_bar(aes(totalprod, fct_reorder(state, totalprod), fill = region),
+         stat = "summary", fun.x = "mean") +
+  scale_x_log10(labels = comma) +
+  coord_cartesian(xlim = c(100000, 100000000)) +
+  labs(x = "Average Honey Production", y = "State")
+  theme_minimal()
 
 ```
 
