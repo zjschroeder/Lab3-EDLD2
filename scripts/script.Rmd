@@ -136,10 +136,11 @@ data_honey2 <- left_join(data_honey, data_region, by = "state_code")
 data_honey2 %>% 
   ggplot() + 
   geom_bar(aes(totalprod, fct_reorder(state, totalprod), fill = region),
-         stat = "summary", fun.x = "mean") +
+         stat = "summary", fun.x = "mean",
+         alpha = .8) +
   scale_x_log10(labels = comma) +
   coord_cartesian(xlim = c(100000, 100000000)) +
-  labs(x = "Average Honey Production", y = "State")
+  labs(x = "Average Honey Production", y = "State", fill = "Region") +
   theme_minimal()
 
 ```
