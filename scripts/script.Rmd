@@ -17,6 +17,7 @@ library(cowplot)
 library(colorspace)
 library(colorblindr)
 library(ggtext)
+library(dplyr)
 
 data <- import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
   characterize() %>% 
@@ -124,6 +125,11 @@ colorblindr::cvd_grid(plot_cb)
 
 # Question 4
 ```{r}
+data_honey <- data %>% 
+  mutate(state_code = state) %>% 
+  select(-state)
+  
+data_honey2 <- left_join(data_honey, data_region, by = "state_code")
 
 ```
 
