@@ -166,6 +166,25 @@ data_honey2 %>%
 # Question 5
 ```{r}
 
+data_honey_3 <- data_honey2 %>% 
+  group_by(region, year) %>% 
+  summarise(honey = mean(totalprod))
+
+data_honey_3 %>% 
+  ggplot(aes(year, region)) +
+  geom_tile(aes(fill = honey),
+            color = "white") +
+  coord_fixed() +
+  scale_fill_viridis_c() +
+  labs(x = "Year", y = "Region", fill = "Honey", 
+       title = "Regional Honey Production (lbs) Across Years") +
+  theme_minimal() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title = element_text(size=17),
+        axis.title.x = element_text(size=13),
+        axis.title.y = element_text(size=13),
+        axis.text = element_text(size=8))
+
 ```
 
 # Question 6
