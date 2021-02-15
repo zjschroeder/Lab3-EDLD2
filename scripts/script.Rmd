@@ -19,17 +19,18 @@ library(cowplot)
 library(colorspace)
 library(colorblindr)
 library(ggtext)
-library(dplyr)
+# library(dplyr) # shouldn't need this becuase it's part of tidyverse
 #remotes::install_github("hrbrmstr/albersusa")
 library(albersusa)
 library(scales)
-library(forcats)
+# library(forcats) # same as above
 
-data <- import(here("data", "honeyproduction.csv"), setclass = "tb_df") %>% 
+# Note you had a small typo below (you had "tb_df" instead of "tbl_df")
+data <- import(here("data", "honeyproduction.csv"), setclass = "tbl_df") %>% 
   characterize() %>% 
   clean_names()
 
-data_region <- import(here("data", "censusregions.csv"), setclass = "tb_df") %>% 
+data_region <- import(here("data", "censusregions.csv"), setclass = "tbl_df") %>% 
   characterize() %>% 
   clean_names()
 
@@ -39,53 +40,61 @@ data_region <- import(here("data", "censusregions.csv"), setclass = "tb_df") %>%
 ```{r warning=FALSE}
 plot1 <- data %>% 
   mutate(Year = factor(year), 
-  Totalprod = as.numeric(totalprod))%>% 
+         Totalprod = as.numeric(totalprod)) %>% 
   select(state, Totalprod, Year) %>% 
-  as_tibble() %>% 
+ # as_tibble() %>% 
   ggplot(aes(Year, Totalprod, group = state)) +
-    geom_line(aes(color = state))+
-   facet_wrap(~state, scales = "free_y", ncol = 1) +
-   gghighlight(state == c("WA", "OR", "CA"),
-               unhighlighted_colour = alpha("#bcbddc", 0.4)) + 
-scale_color_OkabeIto()+
+  geom_line(aes(color = state))+
+  facet_wrap(~state, scales = "free_y", ncol = 1) +
+  gghighlight(state == c("WA", "OR", "CA"),
+              unhighlighted_colour = alpha("#bcbddc", 0.4)) + 
+  scale_color_OkabeIto() +
   labs(y = "Total production",
-       title = "Total production of honey across years by state")+
-    geom_hline(aes(yintercept = 0), color= "#636363", size = .2)+
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+ #stop scientific notation
+       title = "Total production of honey across years by state") +
+  geom_hline(aes(yintercept = 0), color= "#636363", size = .2) +
+  # scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) + #stop scientific notation
+  # rather than the above, I would do
+  scale_y_continuous(labels = scales::comma) +
   theme_minimal()
 
 plot1 + theme(panel.grid.minor = element_blank(), 
-             panel.background = element_blank(),
-             plot.title = element_text(size=11, face="bold", hjust = 0.5),
+              panel.background = element_blank(),
+              plot.title = element_text(size = 11, face = "bold", hjust = 0.5),
               axis.ticks = element_line(color = "#bdbdbd"),
-             axis.title.x = element_text(size=11, face="bold"),
-             axis.title.y = element_text(size=11, face="bold"),
-             axis.text.x = element_markdown(hjust = 1))
+              axis.title.x = element_text(size = 11, face = "bold"),
+              axis.title.y = element_text(size = 11, face = "bold"),
+              axis.text.x = element_markdown(hjust = 1))
 
 
 plot1_nofacet <- data %>% 
   mutate(Year = factor(year), 
-  Totalprod = as.numeric(totalprod))%>% 
+         Totalprod = as.numeric(totalprod)) %>% 
   select(state, Totalprod, Year) %>% 
-  as_tibble() %>% 
+  #as_tibble() %>% 
   ggplot(aes(Year, Totalprod, group = state)) +
-    geom_line(aes(color = state))+
-   gghighlight(state == c("WA", "OR", "CA"),
-               unhighlighted_colour = alpha("#e7d1c1", 0.5)) + 
-scale_color_OkabeIto()+
+  geom_line(aes(color = state)) +
+  gghighlight(state == c("WA", "OR", "CA"),
+              unhighlighted_colour = alpha("#e7d1c1", 0.5)) + 
+  scale_color_OkabeIto() +
   labs(y = "Total production",
-       title = "Total production of honey across years by state")+
-    geom_hline(aes(yintercept = 0), color= "#636363", size = .2)+
-  scale_y_continuous(labels = function(x) format(x, scientific = FALSE))+
+       title = "Total production of honey across years by state") +
+  geom_hline(aes(yintercept = 0), color = "#636363", size = .2) +
+  scale_y_continuous(labels = function(x) format(x, scientific = FALSE)) +
   theme_minimal() + 
   theme(panel.grid.minor = element_blank(), 
              panel.background = element_blank(),
-             plot.title = element_text(size=8, face="bold", hjust = 0.5),
+             plot.title = element_text(size = 8, face = "bold", hjust = 0.5),
               axis.ticks = element_line(color = "#bdbdbd"),
-             axis.title.x = element_text(size=8, face="bold"),
-             axis.title.y = element_text(size=8, face="bold"),
+             axis.title.x = element_text(size = 8, face = "bold"),
+             axis.title.y = element_text(size = 8, face = "bold"),
              axis.text.x = element_text(angle = 60, vjust = 0.5, hjust=.5))
 plot1_nofacet
+
+# The only thing I'd say about the above is that the hline at zero is 
+# overlapping the OR logo (in certain aspect ratios), so you might swap the 
+# order of those so the label is on top. I'd also swap the y labels as I 
+# showed above
+
 
 ```
 
@@ -96,7 +105,7 @@ colorblindr::cvd_grid(plot1_nofacet)
 
 # Question 3
 ```{r, warning=FALSE}
-
+# I stopped styling here
 plot_cb <- data %>% 
   mutate(Year = factor(year), 
   Totalprod = as.numeric(totalprod))%>% 
@@ -161,6 +170,7 @@ data_honey2 %>%
         axis.title.y = element_text(size=13),
         axis.text = element_text(size=8))
 
+# Ooh... I like that color palette
 ```
 
 # Question 5
@@ -185,6 +195,8 @@ data_honey_3 %>%
         axis.title.y = element_text(size=13),
         axis.text = element_text(size=8))
 
+# Very nice! You might also consider putting the legend on the bottom or the
+# on the top so it can be horizontal (giving more space for the actual plot)
 ```
 
 # Question 6
@@ -214,5 +226,7 @@ ggplot(data_map) +
   labs(title = "Total Honey Production by State",
        fill = "Total Honey\nProduction",
        caption = "Grey states did not provide data")
+
+# Beautiful! Really well done.
 ```
 
